@@ -1,17 +1,14 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../api/auth/[...nextauth]/route';
+import { auth } from '@clerk/nextjs/server';
 import prisma from '../../lib/prisma';
 import { redirect } from 'next/navigation';
 import DashboardClient from './DashboardClient';
 
 export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
+  const { userId, sessionClaims } = await auth();
 
-  if (!session || !session.user) {
+  if (!userId) {
     redirect('/login');
   }
-
-  const userId = session.user.id;
 
   const forms = await prisma.form.findMany({
     where: { userId },
@@ -30,5 +27,7 @@ export default async function DashboardPage() {
     createdAt: f.createdAt.toISOString()
   }));
 
-  return <DashboardClient forms={formattedForms} email={session.user.email || ''} />;
+  const userEmail = (sessionClaims?.email as string) || '';
+
+  return <DashboardClient forms={formattedForms} email={userEmail} />;
 }

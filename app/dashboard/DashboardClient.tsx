@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { signOut } from 'next-auth/react';
-import { Sparkles, Plus, Trash2, BarChart2, LogOut, Loader2, Link as LinkIcon, Check } from 'lucide-react';
+import { UserButton } from '@clerk/nextjs';
+import { Sparkles, Plus, Trash2, BarChart2, Loader2, Link as LinkIcon, Check } from 'lucide-react';
 
 interface FormSummary {
   id: string;
@@ -78,14 +78,7 @@ export default function DashboardClient({ forms: initialForms, email }: { forms:
             <span className="font-bold text-xl tracking-tight text-white">AuraForms</span>
           </div>
           <div className="flex items-center space-x-6">
-            <span className="text-sm text-gray-400 font-medium hidden md:block">{email}</span>
-            <button
-              onClick={() => signOut({ callbackUrl: '/login' })}
-              className="text-gray-400 hover:text-white flex items-center text-sm font-medium transition-colors gap-1.5"
-            >
-              <LogOut size={15} />
-              Sign out
-            </button>
+            <UserButton />
           </div>
         </nav>
 
