@@ -1,18 +1,14 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../../../api/auth/[...nextauth]/route';
+import { auth } from '@clerk/nextjs/server';
 import prisma from '../../../../lib/prisma';
 import { redirect } from 'next/navigation';
 import AnalysisClient from './AnalysisClient';
 
 export default async function AnalysisPage({ params }: { params: Promise<{ id: string }> }) {
-  const session = await getServerSession(authOptions);
+  const { userId } = await auth();
 
-  if (!session || !session.user) {
+  if (!userId) {
     redirect('/login');
   }
-
-  // @ts-ignore
-  const userId = session.user.id;
   const resolvedParams = await params;
   const formId = resolvedParams.id;
 
